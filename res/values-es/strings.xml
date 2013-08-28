@@ -19,12 +19,9 @@ limitations under the License.
     <string name="app_name">Breakout</string>
     <string name="button_newGame">Nuevo Juego</string>
     <string name="button_resumeGame">Reanudar Juego</string>
-    <string name="button_about">Sobre</string>
     
     <string name="checkbox_neverLoseBall">Nunca perder la bola</string>
     <string name="checkbox_soundEffectsEnabled">Efectos sonoros</string>
-    
-    <string name="text_highScoreLabel">Mejor Puntaje:</string>
     
     <!-- <string name="about_text"> ... -->
     

@@ -23,11 +23,11 @@ limitations under the License.
     android:orientation="horizontal" >
     
     <include
-        android:layout_width="93dp"
+        android:layout_width="100dp"
         layout="@layout/main1" />
 
     <include
-        android:layout_width="86dp"
+        android:layout_width="100dp"
         layout="@layout/main2" />
     
 </LinearLayout>

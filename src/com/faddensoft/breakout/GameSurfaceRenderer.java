@@ -92,7 +92,7 @@ public class GameSurfaceRenderer implements GLSurfaceView.Renderer {
         gameState.restore();
 
         // Set the background color.
-        GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        GLES20.glClearColor(0, 0, 0, 0);
 
         // Disable depth testing -- we're 2D only.
         GLES20.glDisable(GLES20.GL_DEPTH_TEST);
@@ -158,12 +158,14 @@ public class GameSurfaceRenderer implements GLSurfaceView.Renderer {
         Log.d(TAG, "onSurfaceChanged w=" + width + " h=" + height);
         Log.d(TAG, " --> x=" + x + " y=" + y + " gw=" + viewWidth + " gh=" + viewHeight);
 
-        GLES20.glViewport(x, y, viewWidth, viewHeight);
+        //GLES20.glViewport(x, y, viewWidth, viewHeight);
+        GLES20.glViewport(0, 0, width, height);
 
-        mViewportWidth = viewWidth;
-        mViewportHeight = viewHeight;
-        mViewportXoff = x;
-        mViewportYoff = y;
+        mViewportWidth = viewWidth; //viewWidth
+        mViewportHeight = viewHeight; //viewHeight
+        mViewportXoff = x; //x
+        mViewportYoff = y; //y
+
 
         // Create an orthographic projection that maps the desired arena size to the viewport
         // dimensions.
