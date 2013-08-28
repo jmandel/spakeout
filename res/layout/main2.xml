@@ -25,34 +25,43 @@ limitations under the License.
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginBottom="8dp" > 
+        android:layout_marginBottom="8dp"
+        android:gravity="top"
+        android:orientation="horizontal" >
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="30sp"
-            android:text="@string/difficulty" />
+            android:text="@string/difficulty"
+            android:textSize="12sp" />
+
         <Spinner
             android:id="@+id/spinner_difficultyLevel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_width="100dp"
+            android:layout_height="32dp" />
+
     </LinearLayout>
     
     <CheckBox
         android:id="@+id/checkbox_neverLoseBall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
+        android:layout_gravity="right"
+        android:maxWidth="100dp"
+        android:onClick="clickNeverLoseBall"
         android:text="@string/checkbox_neverLoseBall"
-        android:textSize="30sp"
-        android:onClick="clickNeverLoseBall" />
+        android:textSize="8sp"
+        android:width="100dp" />
 
     <CheckBox
         android:id="@+id/checkbox_soundEffectsEnabled"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:maxWidth="100dp"
+        android:onClick="clickSoundEffectsEnabled"
         android:text="@string/checkbox_soundEffectsEnabled"
-        android:textSize="30sp"
-        android:onClick="clickSoundEffectsEnabled" />
+        android:textSize="8sp"
+        android:width="100dp" />
     
 </LinearLayout>

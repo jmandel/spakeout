@@ -115,7 +115,6 @@ public class GameActivity extends Activity {
          * We need to do this *after* the call to mGLView.onPause(), because that causes
          * GameState to save the game to static storage, and that's what we read the score from.
          */
-        updateHighScore(GameState.getFinalScore());
     }
 
     @Override
@@ -273,23 +272,4 @@ public class GameActivity extends Activity {
         return GameState.canResumeFromSave();
     }
 
-    /**
-     * Updates high score.  If the new score is higher than the previous score, the entry
-     * is updated.
-     *
-     * @param lastScore Score from the last completed game.
-     */
-    private void updateHighScore(int lastScore) {
-        SharedPreferences prefs = getSharedPreferences(BreakoutActivity.PREFS_NAME, MODE_PRIVATE);
-        int highScore = prefs.getInt(BreakoutActivity.HIGH_SCORE_KEY, 0);
-
-        Log.d(TAG, "final score was " + lastScore);
-        if (lastScore > highScore) {
-            Log.d(TAG, "new high score!  (" + highScore + " vs. " + lastScore + ")");
-
-            SharedPreferences.Editor editor = prefs.edit();
-            editor.putInt(BreakoutActivity.HIGH_SCORE_KEY, lastScore);
-            editor.commit();
-        }
-    }
 }

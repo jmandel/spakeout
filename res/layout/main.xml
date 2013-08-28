@@ -16,14 +16,18 @@ limitations under the License.
 -->
 
 <!-- portrait layout -->
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:baselineAligned="false"
-    android:orientation="vertical" >
+    android:orientation="horizontal" >
     
-    <include layout="@layout/main1" />
-    <include layout="@layout/main2" />
+    <include
+        android:layout_width="93dp"
+        layout="@layout/main1" />
+
+    <include
+        android:layout_width="86dp"
+        layout="@layout/main2" />
     
 </LinearLayout>

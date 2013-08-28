@@ -61,10 +61,6 @@ public class BreakoutActivity extends Activity implements OnItemSelectedListener
     private static final String DIFFICULTY_KEY = "difficulty";
     private static final String NEVER_LOSE_BALL_KEY = "never-lose-ball";
     private static final String SOUND_EFFECTS_ENABLED_KEY = "sound-effects-enabled";
-    public static final String HIGH_SCORE_KEY = "high-score";
-
-    // Highest score seen so far.
-    private int mHighScore;
 
 
     @Override
@@ -118,8 +114,6 @@ public class BreakoutActivity extends Activity implements OnItemSelectedListener
         CheckBox soundEffectsEnabled = (CheckBox) findViewById(R.id.checkbox_soundEffectsEnabled);
         soundEffectsEnabled.setChecked(GameActivity.getSoundEffectsEnabled());
 
-        TextView highScore = (TextView) findViewById(R.id.text_highScore);
-        highScore.setText(String.valueOf(mHighScore));
     }
 
     /**
@@ -187,9 +181,6 @@ public class BreakoutActivity extends Activity implements OnItemSelectedListener
     /**
      * onClick handler for "about" button.
      */
-    public void clickAbout(View view) {
-        AboutBox.display(this);
-    }
 
     /*
      * Called when the Spinner gets touched.  (If we had a bunch of spinners we might want to
@@ -277,6 +268,5 @@ public class BreakoutActivity extends Activity implements OnItemSelectedListener
         GameActivity.setNeverLoseBall(prefs.getBoolean(NEVER_LOSE_BALL_KEY, false));
         GameActivity.setSoundEffectsEnabled(prefs.getBoolean(SOUND_EFFECTS_ENABLED_KEY, true));
 
-        mHighScore = prefs.getInt(HIGH_SCORE_KEY, 0);
     }
 }
