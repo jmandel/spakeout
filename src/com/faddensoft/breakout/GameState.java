@@ -723,6 +723,8 @@ public class GameState {
          * moral of the story is that everything that moves needs to tested for collisions
          * with all objects.
          */
+    	
+    		if (mPaddle == null) {return;}
 
         float paddleWidth = mPaddle.getXScale() / 2;
         final float minX = BORDER_WIDTH + paddleWidth;

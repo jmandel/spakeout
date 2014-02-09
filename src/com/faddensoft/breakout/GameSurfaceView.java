@@ -16,6 +16,9 @@
 
 package com.faddensoft.breakout;
 
+import spakeout.Voystick;
+import spakeout.VoystickEvent;
+import spakeout.Voystickable;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.os.ConditionVariable;
@@ -23,80 +26,110 @@ import android.util.Log;
 import android.view.MotionEvent;
 
 /**
- * View object for the GL surface.  Wraps the renderer.
+ * View object for the GL surface. Wraps the renderer.
  */
-public class GameSurfaceView extends GLSurfaceView {
-    private static final String TAG = BreakoutActivity.TAG;
+public class GameSurfaceView extends GLSurfaceView implements Voystickable {
+	private static final String TAG = BreakoutActivity.TAG;
 
-    private GameSurfaceRenderer mRenderer;
-    private final ConditionVariable syncObj = new ConditionVariable();
+	private GameSurfaceRenderer mRenderer;
+	private final ConditionVariable syncObj = new ConditionVariable();
 
-    /**
-     * Prepares the OpenGL context and starts the Renderer thread.
-     */
-    public GameSurfaceView(Context context, GameState gameState,
-            TextResources.Configuration textConfig) {
-        super(context);
+	/**
+	 * Prepares the OpenGL context and starts the Renderer thread.
+	 */
+	public GameSurfaceView(Context context, GameState gameState,
+	    TextResources.Configuration textConfig) {
+		super(context);
 
-        setEGLContextClientVersion(2);      // Request OpenGL ES 2.0
+		setEGLContextClientVersion(2); // Request OpenGL ES 2.0
 
-        // Create our Renderer object, and tell the GLSurfaceView code about it.  This also
-        // starts the renderer thread, which will be calling the various callback methods
-        // in the GameSurfaceRenderer class.
-        mRenderer = new GameSurfaceRenderer(gameState, this, textConfig);
-        setRenderer(mRenderer);
-    }
+		// Create our Renderer object, and tell the GLSurfaceView code about it.
+		// This also
+		// starts the renderer thread, which will be calling the various callback
+		// methods
+		// in the GameSurfaceRenderer class.
+		Voystick.subscribe(this);
+		mRenderer = new GameSurfaceRenderer(gameState, this, textConfig);
+		setRenderer(mRenderer);
+	}
 
-    @Override
-    public void onPause() {
-        /*
-         * We call a "pause" function in our Renderer class, which tells it to save state and
-         * go to sleep.  Because it's running in the Renderer thread, we call it through
-         * queueEvent(), which doesn't wait for the code to actually execute.  In theory the
-         * application could be killed shortly after we return from here, which would be bad if
-         * it happened while the Renderer thread was still saving off important state.  We need
-         * to wait for it to finish.
-         */
+	@Override
+	public void onPause() {
+		/*
+		 * We call a "pause" function in our Renderer class, which tells it to save
+		 * state and go to sleep. Because it's running in the Renderer thread, we
+		 * call it through queueEvent(), which doesn't wait for the code to actually
+		 * execute. In theory the application could be killed shortly after we
+		 * return from here, which would be bad if it happened while the Renderer
+		 * thread was still saving off important state. We need to wait for it to
+		 * finish.
+		 */
 
-        super.onPause();
+		super.onPause();
+		Voystick.unsubscribe(this);
 
-        //Log.d(TAG, "asking renderer to pause");
-        syncObj.close();
-        queueEvent(new Runnable() {
-            @Override public void run() {
-                mRenderer.onViewPause(syncObj);
-            }});
-        syncObj.block();
+		// Log.d(TAG, "asking renderer to pause");
+		syncObj.close();
+		queueEvent(new Runnable() {
+			@Override
+			public void run() {
+				mRenderer.onViewPause(syncObj);
+			}
+		});
+		syncObj.block();
 
-        //Log.d(TAG, "renderer pause complete");
-    }
+		// Log.d(TAG, "renderer pause complete");
+	}
 
-    @Override
-    public boolean onTouchEvent(MotionEvent e) {
-        /*
-         * Forward touch events to the game loop.  We don't want to call Renderer methods
-         * directly, because they manipulate state that is "owned" by a different thread.  We
-         * use the GLSurfaceView queueEvent() function to execute it there.
-         *
-         * This increases the latency of our touch response slightly, but it shouldn't be
-         * noticeable.
-         */
+	@Override
+	public boolean onTouchEvent(MotionEvent e) {
+		/*
+		 * Forward touch events to the game loop. We don't want to call Renderer
+		 * methods directly, because they manipulate state that is "owned" by a
+		 * different thread. We use the GLSurfaceView queueEvent() function to
+		 * execute it there.
+		 * 
+		 * This increases the latency of our touch response slightly, but it
+		 * shouldn't be noticeable.
+		 */
 
-        switch (e.getAction()) {
-            case MotionEvent.ACTION_MOVE:
-                final float x, y;
-                x = e.getX();
-                y = e.getY();
-                //Log.d(TAG, "GameSurfaceView onTouchEvent x=" + x + " y=" + y);
-                queueEvent(new Runnable() {
-                    @Override public void run() {
-                        mRenderer.touchEvent(x, y);
-                    }});
-                break;
-            default:
-                break;
-        }
+		switch (e.getAction()) {
+		case MotionEvent.ACTION_MOVE:
+			final float x,
+			y;
+			x = e.getX();
+			y = e.getY();
+			Log.d(TAG, "GameSurfaceView onTouchEvent x=" + x + " y=" + y);
+			queueEvent(new Runnable() {
+				@Override
+				public void run() {
+					mRenderer.touchEvent(x, y);
+				}
+			});
+			break;
+		default:
+			break;
+		}
 
-        return true;
-    }
+		return true;
+	}
+
+	private float restricted(double x, double min, double max) {
+		return (float) Math.max(Math.min(x, max), min);
+	}
+
+	@Override
+	public void onVoystickEvent(VoystickEvent e) {
+		//Log.d("gamesurface", "got an audiojoystick event with volume " + e.volume);
+		double v = restricted((e.volume - 100) / 20000, 0, 1);
+		double ev = Math.exp(v);
+		final double x = (ev - 1) / (Math.exp(1)-1);
+		//Log.d("gamesurface", "converted to " + v + "\t"+ev+"\t"+x);
+		queueEvent(new Runnable() {
+			@Override
+			public void run() {
+				mRenderer.touchEvent((float) restricted(x*720,0,720), 1080);
+			}
+		});
+	}
 }

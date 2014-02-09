@@ -20,6 +20,9 @@ limitations under the License.
     android:versionCode="1"
     android:versionName="1.0.2" >
 
+    <uses-permission android:name="android.permission.RECORD_AUDIO"></uses-permission>
+    
+
     <!-- Require Froyo or later (8), target Jellybean (16). -->
     <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="16" />
 
