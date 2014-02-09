@@ -154,8 +154,10 @@ public class GameActivity extends Activity {
                 paddleSize = 1.0f;
                 scoreMultiplier = 1.0f;
                 maxLives = 3;
-                minSpeed = 300;
-                maxSpeed = 800;
+                minSpeed = 200;
+                maxSpeed = 250;
+//                minSpeed = 200;
+//                maxSpeed = 800;
                 break;
             case 2:                     // hard
                 ballSize = 1.0f;

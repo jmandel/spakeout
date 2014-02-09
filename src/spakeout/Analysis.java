@@ -1,5 +1,7 @@
 package spakeout;
 
+import android.util.Log;
+
 import com.google.common.primitives.Doubles;
 import com.google.common.primitives.Shorts;
 
@@ -19,11 +21,15 @@ public class Analysis {
 		int maxIndex = -1;
 		for (int i = samplesToSkip; i < autocorrData.length - samplesToSkip; i++) {
 
-			if (autocorrData[i] > maxSoFar + .001) {
+			if (autocorrData[i] / Math.abs(maxSoFar)> 1.01 || (autocorrData[i] > maxSoFar && (i-maxIndex) <  10)) {
 				maxSoFar = autocorrData[i];
 				maxIndex = i;
 			}
 
+		}
+
+		if (maxSoFar == -1) {
+			System.out.println("couldn't find a single damn positival value.!");
 		}
 
 		PeakFrequency r = new PeakFrequency();
@@ -40,8 +46,9 @@ public class Analysis {
 	public static double[] autoCorrelation(double[] data) {
 		// assume even n
 		int n = data.length;
-		assert (n % 2 == 0);
 
+		if (n%2==1) n--;
+		
 		double[] ac = new double[n];
 
 		DoubleFFT_1D fft = new DoubleFFT_1D(n);

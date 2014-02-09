@@ -121,9 +121,20 @@ public class GameSurfaceView extends GLSurfaceView implements Voystickable {
 	@Override
 	public void onVoystickEvent(VoystickEvent e) {
 		//Log.d("gamesurface", "got an audiojoystick event with volume " + e.volume);
-		double v = restricted((e.volume - 100) / 20000, 0, 1);
-		double ev = Math.exp(v);
-		final double x = (ev - 1) / (Math.exp(1)-1);
+
+		if(e.volume < 1000) return;
+		if (e.f0.strength < .5) return;
+
+		double pitchMin = 200;
+		double pitchMax = pitchMin*2;
+		double pitch = e.f0.frequency;
+		
+		pitch = Math.min(pitchMax, pitch);
+		pitch = Math.max(pitchMin, pitch);
+		//while(pitch < pitchMin) pitch *= 2;
+		//while(pitch > pitchMax) pitch /= 2;
+		
+		final double x = Math.log(pitch / pitchMin) / Math.log(2);
 		//Log.d("gamesurface", "converted to " + v + "\t"+ev+"\t"+x);
 		queueEvent(new Runnable() {
 			@Override

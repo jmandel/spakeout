@@ -65,9 +65,15 @@ public class AutocorrelationTest extends TestCase {
 		if (samplesPerStride%2 ==1) {samplesPerStride++;}
 		for (int i = 0; i < soundData.length - samplesPerStride; i += samplesPerStride) {
 			short[] thisStride = Shorts.toArray(soundDataList.subList(i, i+samplesPerStride));
+			System.out.println("Assessing " + i);
   		PeakFrequency m = Analysis.findPeakFrequency(thisStride, samplingRateHz);
   		double rms = Analysis.rms(thisStride);
   		vals.add(m.frequency + "\t"+ m.strength + "\t" + rms);
+
+  		double[] ac = Analysis.autoCorrelation(thisStride.clone());
+  		String acvals = Joiner.on("\n").join(Doubles.asList(ac));
+  		Files.write(acvals.getBytes(), new File("/tmp/"+inFileName+"."+i+".debug.dat"));
+
 		}
 		Files.write(Joiner.on('\n').join(vals).getBytes(), new File("/tmp/"+inFileName+".pitchtrack.dat"));
 	}
@@ -77,6 +83,9 @@ public class AutocorrelationTest extends TestCase {
 		//assertFrequency("300Hz", 44100, 300);
 		//assertFrequency("eats00", 11025, -1);
 		strideOver("eats00", 11025, 20);
+		//strideOver("eats01", 44100, 20);
+		//strideOver("siney", 44100, 20);
+		strideOver("carrie", 44100, 20);
 	}
 
 }
